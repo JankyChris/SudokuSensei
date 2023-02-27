@@ -49,29 +49,50 @@ def show_image(image, title="window"):
     cv2.waitKey(0)
     cv2.destroyAllWindows()
 
+def show_solution(board):
+    # Create a black image
+    img = np.zeros((450,450,3), np.uint8)
+
+    # Write some Text
+
+    font                    = cv2.FONT_HERSHEY_SIMPLEX
+    at                      = (10,30)
+    fontScale               = 1
+    fontColor               = (255,255,255)
+    thickness               = 1
+    lineType                = 2
+
+    for row in range(9):
+        cv2.putText(img, np.array2string(board[row, :]), 
+            (at[0], at[1]+50*row), 
+            font, 
+            fontScale,
+            fontColor,
+            thickness,
+            lineType)
+
+    #Display the image
+    cv2.imshow("img",img)
+    cv2.waitKey(0)
+
+def print_sudoku(board):
+    for n_row, row in enumerate(board):
+        if n_row%3 == 0:
+            print("\n")
+        print(f"{row[0:3]}   {row[3:6]}   {row[6:9]}")
+
 if __name__ == "__main__":
     image_path = "test_images/sample_sudoku.jpeg"
-
     image = cv2.imread(image_path)
     prc_image = preprocess_image(image)
     trn_image = transorm_image(prc_image)
     cells = extract_cells(trn_image)
-
     cells = np.array([cell[15:-15, 15:-15] for cell in cells])
     cells = np.array([cv2.resize(cell, (28, 28), interpolation=cv2.INTER_LINEAR) for cell in cells])
-    
     grid = np.concatenate(cells, axis=1)
-
-    """
-    show_image(image)
-    show_image(prc_image)
-    show_image(trn_image)
-    show_image(grid)
-    """
 
     model = Net()
     model.load_state_dict(torch.load("./model_results/model.pth"))
-    #model = model.to("cpu")
     model.eval()
 
     digits = [i for i in range(10)]
@@ -86,9 +107,16 @@ if __name__ == "__main__":
                 # show_image(cell, f"{digits[prediction[0,0]]}")
                 board[n//9, n%9] = prediction
     
-    print(f"Solving Sudoku:\n{board}")
+    print(f"Solving Sudoku:")
+    print_sudoku(board)
+    start = perf_counter()
     if solve_sudoku(board):
-        print(f"Solution:\n{board}")
+        stop = perf_counter()
+        print(f"\nSolved Sudoku in {stop-start:.2f} seconds.\n")
+        print(f"Solution:")
+        print_sudoku(board)
+        # show_solution(board)
     else:
         print("Could not solve board.")
+    
 
