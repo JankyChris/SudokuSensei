@@ -4,30 +4,10 @@ import numpy as np
 import torch.nn as nn
 import matplotlib.pyplot as plt
 from torchvision.transforms import transforms
+from torchvision.datasets import ImageFolder
 import torch.nn.functional as F
 import torch.optim as optim
 
-batch_size = 64
-learning_rate = 0.01
-n_epochs = 10
-
-train_dataset = torchvision.datasets.MNIST("./mnist_data", train=True, transform=transforms.ToTensor(), download=True)
-test_dataset = torchvision.datasets.MNIST("./mnist_data", train=False, transform=transforms.ToTensor(), download=False)
-
-train_loader = torch.utils.data.DataLoader(dataset=train_dataset, batch_size=batch_size, shuffle=True)
-test_loader = torch.utils.data.DataLoader(dataset=test_dataset, batch_size=batch_size, shuffle=True)
-
-"""
-data=iter(train_loader)
-samples,labels=next(data)
-print(f"number of samples {samples.shape}")
-print(f"number of labels {labels.shape}")
-plt.figure(figsize=(10,8))
-for i in range(10):
-    plt.subplot(2,5,i+1)
-    plt.imshow(samples[i][0],cmap='gray')
-plt.show()
-"""
 
 class Net(nn.Module):
     def __init__(self):
@@ -48,6 +28,37 @@ class Net(nn.Module):
         return F.log_softmax(x)
 
 if __name__ == "__main__":
+    batch_size = 256
+    learning_rate = 0.01
+    n_epochs = 24
+
+    """
+    train_dataset = torchvision.datasets.MNIST("./mnist_data", train=True, transform=transforms.ToTensor(), download=True)
+    test_dataset = torchvision.datasets.MNIST("./mnist_data", train=False, transform=transforms.ToTensor(), download=False)
+
+    train_loader = torch.utils.data.DataLoader(dataset=train_dataset, batch_size=batch_size, shuffle=True)
+    test_loader = torch.utils.data.DataLoader(dataset=test_dataset, batch_size=batch_size, shuffle=True)
+    """
+    transform = transforms.Compose([transforms.Grayscale(num_output_channels=1), transforms.ToTensor()])
+    dataset = ImageFolder("./printed_digit_dataset/assets", transform=transform)
+
+    train_size = int(0.8 * len(dataset))
+    test_size = len(dataset) - train_size
+    train_dataset, test_dataset = torch.utils.data.random_split(dataset, [train_size, test_size])
+
+    train_loader = torch.utils.data.DataLoader(dataset=train_dataset, batch_size=batch_size, shuffle=True)
+    test_loader = torch.utils.data.DataLoader(dataset=test_dataset, batch_size=batch_size, shuffle=True)
+
+    data=iter(train_loader)
+    samples, labels=next(data)
+    print(f"number of samples {samples.shape}")
+    print(f"number of labels {labels.shape}")
+    plt.figure(figsize=(10,8))
+    for i in range(10):
+        plt.subplot(2,5,i+1)
+        plt.imshow(samples[i][0],cmap='gray')
+    plt.show()
+
     network = Net()
     optimizer = optim.Adam(network.parameters(), lr=learning_rate)
 
@@ -64,7 +75,7 @@ if __name__ == "__main__":
             loss = F.nll_loss(output, target)
             loss.backward()
             optimizer.step()
-            if batch_idx % 50 == 0:
+            if batch_idx % 10 == 0:
                 print(f"Train Epoch: {epoch} [ {batch_idx * len(data)}/{len(train_loader.dataset)} ({100. * batch_idx / len(train_loader):.0f}%)]\tLoss: {loss.item():.6f}")
                 train_losses.append(loss.item())
                 train_counter.append((batch_idx*64) + ((epoch-1)*len(train_loader.dataset)))
