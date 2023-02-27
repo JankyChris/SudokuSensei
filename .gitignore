@@ -1,1 +1,3 @@
-/SudokuSensei.py
+/mnist_data
+/__pycache__
+/model_results/optimizer.pth
