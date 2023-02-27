@@ -5,6 +5,7 @@ Currently using a brute-force backtracking algorithm.
 
 ## To Do
   - implement different solving algorithms
+  - display solution as overlay on original input image
   
 ## Example
   We have as input the following picture of a Sudoku that has not been started:
