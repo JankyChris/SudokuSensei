@@ -1,3 +1,10 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+"""Neural Net for printed digit classification (PyTorch)
+@author: Christoph M. Jankowsky
+"""
+
 import torch
 import torchvision
 import numpy as np

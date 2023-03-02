@@ -1,3 +1,10 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+"""Implementation of several Sudoku solving algorithms.
+@author: Christoph M. Jankowsky
+"""
+
 import numpy as np
 
 def solve_sudoku(board):

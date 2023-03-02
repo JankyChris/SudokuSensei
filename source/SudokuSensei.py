@@ -1,3 +1,10 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+"""Sudoku Solver from image.
+@author: Christoph M. Jankowsky
+"""
+
 from time import perf_counter
 
 import numpy as np
@@ -82,7 +89,7 @@ def print_sudoku(board):
         print(f"{row[0:3]}   {row[3:6]}   {row[6:9]}")
 
 if __name__ == "__main__":
-    image_path = "test_images/sample_sudoku.jpeg"
+    image_path = "./test_images/sample_sudoku.jpeg"
     image = cv2.imread(image_path)
     prc_image = preprocess_image(image)
     trn_image = transorm_image(prc_image)
