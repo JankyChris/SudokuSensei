@@ -9,7 +9,8 @@ Currently using a brute-force backtracking algorithm.
   
 ## Example
   We have as input the following picture of a Sudoku that has not been started:
-  ![sample](test_images/sample_sudoku.jpeg)
+  
+  <img src="test_images/sample_sudoku.jpeg" width="500">
   
  Output:
  ```
@@ -52,10 +53,12 @@ Solution:
    
 ## How it works
 The input image is processed via the cv2 library. It is converted to grayscale and then crushed using adaptive threshold:
-![pre1](test_images/preprocess_1.png)
+
+<img src="test_images/preprocessed/preprocess_1.png" width="500">
 
 Afterwards it is cropped and perspective-warped to a square:
-![pre2](test_images/preprocess_2.png)
+
+<img src="test_images/preprocessed/preprocess_2.png" width="500">
 
 Cells are extruded using their contours and non-empty cells are evaluated using a custom trained neural net. The dataset was kindly provided by [@kaydee0502](https://github.com/kaydee0502) on [Kaggle](https://www.kaggle.com/datasets/kshitijdhama/printed-digits-dataset). 
 
