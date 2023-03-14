@@ -3,3 +3,5 @@
 /model_results/optimizer.pth
 source/__pycache__
 .DS_store
+/digits_dataset/assets
+/printed_digit_dataset/.DS_Store

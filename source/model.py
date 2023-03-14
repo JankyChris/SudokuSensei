@@ -35,9 +35,9 @@ class Net(nn.Module):
         return F.log_softmax(x)
 
 if __name__ == "__main__":
-    batch_size = 256
+    batch_size = 250
     learning_rate = 0.01
-    n_epochs = 24
+    n_epochs = 16
 
     """
     train_dataset = torchvision.datasets.MNIST("./mnist_data", train=True, transform=transforms.ToTensor(), download=True)
@@ -46,7 +46,7 @@ if __name__ == "__main__":
     train_loader = torch.utils.data.DataLoader(dataset=train_dataset, batch_size=batch_size, shuffle=True)
     test_loader = torch.utils.data.DataLoader(dataset=test_dataset, batch_size=batch_size, shuffle=True)
     """
-    transform = transforms.Compose([transforms.Grayscale(num_output_channels=1), transforms.ToTensor()])
+    transform = transforms.Compose([transforms.Grayscale(num_output_channels=1), transforms.ToTensor(), transforms.RandomRotation(3)])
     dataset = ImageFolder("./printed_digit_dataset/assets", transform=transform)
 
     train_size = int(0.8 * len(dataset))
@@ -67,7 +67,7 @@ if __name__ == "__main__":
     plt.show()
 
     network = Net()
-    optimizer = optim.Adam(network.parameters(), lr=learning_rate)
+    optimizer = optim.Adam(network.parameters(), lr=learning_rate, weight_decay=1e-5)
 
     train_losses = []
     train_counter = []
@@ -82,7 +82,7 @@ if __name__ == "__main__":
             loss = F.nll_loss(output, target)
             loss.backward()
             optimizer.step()
-            if batch_idx % 10 == 0:
+            if batch_idx % 4 == 0:
                 print(f"Train Epoch: {epoch} [ {batch_idx * len(data)}/{len(train_loader.dataset)} ({100. * batch_idx / len(train_loader):.0f}%)]\tLoss: {loss.item():.6f}")
                 train_losses.append(loss.item())
                 train_counter.append((batch_idx*64) + ((epoch-1)*len(train_loader.dataset)))
